@@ -60,8 +60,19 @@ def del_task(task):
 
 
 #  save changes 
-
-
+def save_task():
+    mycursor = mydb.cursor()
+    for i in range(len(task_list)):
+        if status[task_list[i]] == "Done":
+            End_Time = end_time[task_list[i]]
+            save_end_time = r",STR_TO_DATE('{}','%Y-%m-%d %H:%i:%S'))".format(End_Time)
+            print(End_Time)
+        else:
+            save_end_time = ",NULL)"
+        print(r"INSER INTO tasks values ('{}',STR_TO_DATE('{}','%Y-%m-%d %H:%i:%S'),'{}'".format(task_list[i],time[i],status[task_list[i]]) + save_end_time)
+        sql = r"INSERT INTO tasks (task,add_time,status,end_time) values ('{}',STR_TO_DATE('{}','%Y-%m-%d %H:%i:%S'),'{}'".format(task_list[i],time[i],status[task_list[i]]) + save_end_time
+        mycursor.execute(sql)
+        mydb.commit()
 
 
 # display tasks
@@ -97,3 +108,4 @@ print(task_list,status,time,end_time)
 task_status(task_list[2])
 display_task()
 print(task_list,status,time,end_time)
+save_task()
