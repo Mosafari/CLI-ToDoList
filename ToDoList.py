@@ -17,11 +17,10 @@ def add_task():
         status[task] = 'Not Started'
 
 
-
 # complete ToDo
-
-
-
+def task_status(task):
+    status[task] = "Done"
+    
 
 # delete ToDo
 
@@ -42,4 +41,6 @@ num = 0 # number of tasks
 task_list = [] # list of tasks
 status ={} # status of the task key =  task and value = status  -> status =(Done, Not Started)
 add_task()
+print(task_list,status)
+task_status(task_list[0])
 print(task_list,status)
