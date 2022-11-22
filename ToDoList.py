@@ -1,9 +1,13 @@
 # module required
+import mysql.connector
 
+# create DB
 
-
+# create table
 # connecting to DB
-
+def connector():
+    mydb = mysql.connector.connect(
+    host='127.0.0.1', user='root', password='testtest', database='mysql')
 
 
 # add ToDo
@@ -34,8 +38,8 @@ def del_task(task):
 
 
 
-# disply tasks
-def disply_task():
+# display tasks
+def display_task():
     length = 0
     for i in task_list:
         if len(i)> length:
@@ -49,6 +53,7 @@ def disply_task():
 num = 0 # number of tasks
 task_list = [] # list of tasks
 status ={} # status of the task key =  task and value = status  -> status =(Done, Not Started)
+connector()
 add_task()
 print(task_list,status)
 task_status(task_list[0])
@@ -62,4 +67,4 @@ print(task_list,status)
 add_task()
 print(task_list,status)
 task_status(task_list[2])
-disply_task()
+display_task()
