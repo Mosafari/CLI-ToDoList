@@ -1,5 +1,6 @@
 # module required
 import mysql.connector
+import datetime
 
 # create DB
 def create_db():
@@ -20,7 +21,7 @@ def create_table():
     s= "USE {}_todolist".format(name)
     mycursor.execute(s)
     mydb.commit()
-    sql = "CREATE TABLE tasks (id INTEGER PRIMARY KEY, task VARCHAR(255), add_time TIMESTAMP,status VARCHAR(255),end_time TIMESTAMP)"
+    sql = r"CREATE TABLE tasks (id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY, task VARCHAR(255), add_time DATETIME,status VARCHAR(255),end_time DATETIME)"
     mycursor.execute(sql)
     mydb.commit()
     
@@ -40,6 +41,7 @@ def add_task():
         add_task()
     else:
         task_list.append(task)
+        time.append(datetime.datetime.now().strftime(r"%Y-%m-%d %H:%M:%S"))
         status[task] = 'Not Started'
 
 
@@ -72,7 +74,7 @@ def display_task():
 
 # main
 
-num = 0 # number of tasks
+time = []
 task_list = [] # list of tasks
 status ={} # status of the task key =  task and value = status  -> status =(Done, Not Started)
 connector()
