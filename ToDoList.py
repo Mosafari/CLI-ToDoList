@@ -2,10 +2,20 @@
 import mysql.connector
 
 # create DB
-
+def create_db():
+    name = input("Whats your name ? (optional)\n")
+    if not name:
+        name = "user"
+    mycursor = mydb.cursor()
+    sql = "CREATE DATABASE {}_todolist".format(name)
+    mycursor.execute(sql)
+    mydb.commit()
+    
+    
 # create table
 # connecting to DB
 def connector():
+    global mydb
     mydb = mysql.connector.connect(
     host='127.0.0.1', user='root', password='testtest', database='mysql')
 
@@ -54,6 +64,7 @@ num = 0 # number of tasks
 task_list = [] # list of tasks
 status ={} # status of the task key =  task and value = status  -> status =(Done, Not Started)
 connector()
+create_db()
 add_task()
 print(task_list,status)
 task_status(task_list[0])
