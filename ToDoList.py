@@ -3,9 +3,11 @@ import mysql.connector
 
 # create DB
 def create_db():
+    global name
     name = input("Whats your name ? (optional)\n")
     if not name:
         name = "user"
+    print("hi ", name, ".")
     mycursor = mydb.cursor()
     sql = "CREATE DATABASE {}_todolist".format(name)
     mycursor.execute(sql)
@@ -13,6 +15,16 @@ def create_db():
     
     
 # create table
+def create_table():
+    mycursor = mydb.cursor()
+    s= "USE {}_todolist".format(name)
+    mycursor.execute(s)
+    mydb.commit()
+    sql = "CREATE TABLE tasks (id INTEGER PRIMARY KEY, task VARCHAR(255), add_time TIMESTAMP,status VARCHAR(255),end_time TIMESTAMP)"
+    mycursor.execute(sql)
+    mydb.commit()
+    
+    
 # connecting to DB
 def connector():
     global mydb
@@ -65,6 +77,7 @@ task_list = [] # list of tasks
 status ={} # status of the task key =  task and value = status  -> status =(Done, Not Started)
 connector()
 create_db()
+create_table()
 add_task()
 print(task_list,status)
 task_status(task_list[0])
