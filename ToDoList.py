@@ -35,7 +35,14 @@ def del_task(task):
 
 
 # disply tasks
-
+def disply_task():
+    length = 0
+    for i in task_list:
+        if len(i)> length:
+            length = len(i)
+    for task in task_list:
+        print() # empty line
+        print(task ,(length-len(task))*' ',': ', status[task])
 
 # main
 
@@ -50,3 +57,9 @@ add_task()
 print(task_list,status)
 del_task(task_list[0])
 print(task_list,status)
+add_task()
+print(task_list,status)
+add_task()
+print(task_list,status)
+task_status(task_list[2])
+disply_task()
