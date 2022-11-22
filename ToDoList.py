@@ -75,6 +75,26 @@ def save_task():
         mydb.commit()
 
 
+# data loader
+def dataloader():
+    mycursor = mydb.cursor()
+    sql_name = "show databases"
+    # extracting databases name from database
+    mycursor.execute(sql_name)
+    db_names = mycursor.fetchall()
+    for dbname in db_names:
+        print(db_names)
+        if "todolist" in dbname[0]:
+            print("hi ",dbname[0])
+            usedb = "USE " + dbname[0]
+            mycursor.execute(usedb)
+            mydb.commit()
+    sql = "SELECT * FROM tasks"
+    mycursor.execute(sql)
+    myresult = mycursor.fetchall()
+    print(myresult)
+    
+
 # display tasks
 def display_task():
     length = 0
@@ -91,8 +111,9 @@ time = []
 task_list = [] # list of tasks
 status ={} # status of the task key =  task and value = status  -> status =(Done, Not Started)
 connector()
-create_db()
-create_table()
+# create_db()
+# create_table()
+dataloader()
 add_task()
 print(task_list,status,time,end_time)
 task_status(task_list[0])
