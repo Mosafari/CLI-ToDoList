@@ -23,7 +23,9 @@ def task_status(task):
     
 
 # delete ToDo
-
+def del_task(task):
+    task_list.remove(task)
+    status.pop(task)
 
 
 
@@ -43,4 +45,8 @@ status ={} # status of the task key =  task and value = status  -> status =(Done
 add_task()
 print(task_list,status)
 task_status(task_list[0])
+print(task_list,status)
+add_task()
+print(task_list,status)
+del_task(task_list[0])
 print(task_list,status)
