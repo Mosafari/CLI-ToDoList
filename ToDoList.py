@@ -45,16 +45,18 @@ def add_task():
         status[task] = 'Not Started'
 
 
-# complete ToDo
+# complete ToDo (status)
 def task_status(task):
     status[task] = "Done"
+    end_time[task] = datetime.datetime.now().strftime(r"%Y-%m-%d %H:%M:%S")
     
 
 # delete ToDo
 def del_task(task):
+    time.remove(time[task_list.index(task)])
     task_list.remove(task)
     status.pop(task)
-
+    end_time.pop(task)
 
 
 #  save changes 
@@ -73,7 +75,7 @@ def display_task():
         print(task ,(length-len(task))*' ',': ', status[task])
 
 # main
-
+end_time ={}
 time = []
 task_list = [] # list of tasks
 status ={} # status of the task key =  task and value = status  -> status =(Done, Not Started)
@@ -81,16 +83,17 @@ connector()
 create_db()
 create_table()
 add_task()
-print(task_list,status)
+print(task_list,status,time,end_time)
 task_status(task_list[0])
-print(task_list,status)
+print(task_list,status,time,end_time)
 add_task()
-print(task_list,status)
+print(task_list,status,time,end_time)
 del_task(task_list[0])
-print(task_list,status)
+print(task_list,status,time,end_time)
 add_task()
-print(task_list,status)
+print(task_list,status,time,end_time)
 add_task()
-print(task_list,status)
+print(task_list,status,time,end_time)
 task_status(task_list[2])
 display_task()
+print(task_list,status,time,end_time)
