@@ -21,6 +21,7 @@ def create_db():
     if not name:
         name = "user"
     print("hi ", name, ".")
+    print() # empty line
     mycursor = mydb.cursor()
     sql = "CREATE DATABASE {}_todolist".format(name)
     mycursor.execute(sql)
@@ -58,13 +59,31 @@ def add_task():
 
 
 # complete ToDo (status)
-def task_status(task):
+def task_status():
+    try:
+        taskindex = int(input("Wich Task ? (Task number)"))
+    except ValueError:
+        print("You must enter a task number! ")
+        task_status()
+    if taskindex < len(task_list) or taskindex >= len(task_list):
+        print("number is out of range!")
+        task_status()
+    task = task_list[taskindex]
     status[task] = "Done"
     end_time[task] = datetime.datetime.now().strftime(r"%Y-%m-%d %H:%M:%S")
     
 
 # delete ToDo
-def del_task(task):
+def del_task():
+    try:
+        taskindex = int(input("Wich Task ? (Task number)"))
+    except ValueError:
+        print("You must enter a task number! ")
+        del_task()
+    if taskindex < len(task_list) or taskindex >= len(task_list):
+        print("number is out of range!")
+        del_task()
+    task = task_list[taskindex]
     time.remove(time[task_list.index(task)])
     task_list.remove(task)
     status.pop(task)
@@ -187,6 +206,5 @@ dataloader()
 # add_task()
 # print(task_list,status,time,end_time)
 # task_status(task_list[2])
-helpmanual()
 display_task()
 print(task_list,status,time,end_time)
