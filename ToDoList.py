@@ -62,6 +62,10 @@ def del_task(task):
 #  save changes 
 def save_task():
     mycursor = mydb.cursor()
+    clstable = "TRUNCATE TABLE tasks"
+    print(clstable)
+    mycursor.execute(clstable)
+    mydb.commit()
     for i in range(len(task_list)):
         if status[task_list[i]] == "Done":
             End_Time = end_time[task_list[i]]
@@ -80,6 +84,7 @@ def init():
 
 # data loader
 def dataloader():
+    global name
     mycursor = mydb.cursor()
     sql_name = "show databases"
     # extracting databases name from database
@@ -88,13 +93,14 @@ def dataloader():
     for dbname in db_names:
         print(db_names)
         if "todolist" in dbname[0]:
-            print("hi ",dbname[0])
+            name = dbname[0][:-9]
+            print("hi ",name)
             usedb = "USE " + dbname[0]
             mycursor.execute(usedb)
             mydb.commit()
             break
-        else:
-            return init()
+    else:
+        return init()
     sql = "SELECT * FROM tasks"
     mycursor.execute(sql)
     global myresult
@@ -133,7 +139,6 @@ status ={} # status of the task key =  task and value = status  -> status =(Done
 connector()
 
 dataloader()
-extractor()
 # add_task()
 # print(task_list,status,time,end_time)
 # task_status(task_list[0])
