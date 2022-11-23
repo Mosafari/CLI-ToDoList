@@ -62,11 +62,11 @@ def add_task():
 # complete ToDo (status)
 def task_status():
     try:
-        taskindex = int(input("Wich Task ? (Task number)"))
+        taskindex = int(input("Wich Task ? (Task number)"))-1
     except ValueError:
         print("You must enter a task number! ")
         task_status()
-    if taskindex < len(task_list) or taskindex >= len(task_list):
+    if taskindex < 0 or taskindex >= len(task_list):
         print("number is out of range!")
         task_status()
     task = task_list[taskindex]
@@ -77,11 +77,11 @@ def task_status():
 # delete ToDo
 def del_task():
     try:
-        taskindex = int(input("Wich Task ? (Task number)"))
+        taskindex = int(input("Wich Task ? (Task number)"))-1
     except ValueError:
         print("You must enter a task number! ")
         del_task()
-    if taskindex < len(task_list) or taskindex >= len(task_list):
+    if taskindex < 0 or taskindex >= len(task_list):
         print("number is out of range!")
         del_task()
     task = task_list[taskindex]
