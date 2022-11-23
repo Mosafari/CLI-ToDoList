@@ -66,14 +66,17 @@ def save_task():
         if status[task_list[i]] == "Done":
             End_Time = end_time[task_list[i]]
             save_end_time = r",STR_TO_DATE('{}','%Y-%m-%d %H:%i:%S'))".format(End_Time)
-            print(End_Time)
         else:
             save_end_time = ",NULL)"
-        print(r"INSER INTO tasks values ('{}',STR_TO_DATE('{}','%Y-%m-%d %H:%i:%S'),'{}'".format(task_list[i],time[i],status[task_list[i]]) + save_end_time)
         sql = r"INSERT INTO tasks (task,add_time,status,end_time) values ('{}',STR_TO_DATE('{}','%Y-%m-%d %H:%i:%S'),'{}'".format(task_list[i],time[i],status[task_list[i]]) + save_end_time
         mycursor.execute(sql)
         mydb.commit()
 
+
+# init DB
+def init():
+    create_db()
+    create_table()
 
 # data loader
 def dataloader():
@@ -89,14 +92,17 @@ def dataloader():
             usedb = "USE " + dbname[0]
             mycursor.execute(usedb)
             mydb.commit()
+            break
+        else:
+            return init()
     sql = "SELECT * FROM tasks"
     mycursor.execute(sql)
     global myresult
     myresult = mycursor.fetchall()
-    print(myresult)
+    extractor()
     
 
-# data ectractor
+# data extractor
 def extractor():
     global task_list,time,status,end_time
     for record in myresult:
@@ -107,6 +113,7 @@ def extractor():
             end_time[record[1]] = "Not Started"
         else:
             end_time[record[1]] = record[4]
+
 
 # display tasks
 def display_task():
@@ -124,8 +131,7 @@ time = []
 task_list = [] # list of tasks
 status ={} # status of the task key =  task and value = status  -> status =(Done, Not Started)
 connector()
-# create_db()
-# create_table()
+
 dataloader()
 extractor()
 # add_task()
