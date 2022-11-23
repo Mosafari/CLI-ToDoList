@@ -56,6 +56,7 @@ def add_task():
         task_list.append(task)
         time.append(datetime.datetime.now().strftime(r"%Y-%m-%d %H:%M:%S"))
         status[task] = 'Not Started'
+        end_time[task] = 'Not Finished'
 
 
 # complete ToDo (status)
@@ -158,9 +159,10 @@ def display_task():
     for i in task_list:
         if len(i)> length:
             length = len(i)
+    print(" ","  ",(((length)//2)-2)*' ',"task" ,(((length)//2)-2)*' ',': ', "   status   ","     Start Time     ","      End Time")
     for task in task_list:
         print() # empty line
-        print(task ,(length-len(task))*' ',': ', status[task])
+        print(task_list.index(task),". ",((length-len(task))//2)*' ',task ,((length-len(task))//2)*' ',': ',' '*3 ,status[task],"  ",time[task_list.index(task)]," ",end_time[task])
 
 # main
 def main():
@@ -193,6 +195,7 @@ status ={} # status of the task key =  task and value = status  -> status =(Done
 connector()
 
 dataloader()
+main()
 # add_task()
 # print(task_list,status,time,end_time)
 # task_status(task_list[0])
