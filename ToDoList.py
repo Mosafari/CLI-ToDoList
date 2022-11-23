@@ -91,9 +91,22 @@ def dataloader():
             mydb.commit()
     sql = "SELECT * FROM tasks"
     mycursor.execute(sql)
+    global myresult
     myresult = mycursor.fetchall()
     print(myresult)
     
+
+# data ectractor
+def extractor():
+    global task_list,time,status,end_time
+    for record in myresult:
+        task_list.append(record[1])
+        time.append(record[2])
+        status[record[1]] = record[3]
+        if record[4] == None:
+            end_time[record[1]] = "Not Started"
+        else:
+            end_time[record[1]] = record[4]
 
 # display tasks
 def display_task():
@@ -114,19 +127,20 @@ connector()
 # create_db()
 # create_table()
 dataloader()
-add_task()
-print(task_list,status,time,end_time)
-task_status(task_list[0])
-print(task_list,status,time,end_time)
-add_task()
-print(task_list,status,time,end_time)
-del_task(task_list[0])
-print(task_list,status,time,end_time)
-add_task()
-print(task_list,status,time,end_time)
-add_task()
-print(task_list,status,time,end_time)
-task_status(task_list[2])
+extractor()
+# add_task()
+# print(task_list,status,time,end_time)
+# task_status(task_list[0])
+# print(task_list,status,time,end_time)
+# add_task()
+# print(task_list,status,time,end_time)
+# del_task(task_list[0])
+# print(task_list,status,time,end_time)
+# add_task()
+# print(task_list,status,time,end_time)
+# add_task()
+# print(task_list,status,time,end_time)
+# task_status(task_list[2])
 display_task()
 print(task_list,status,time,end_time)
 save_task()
