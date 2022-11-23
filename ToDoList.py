@@ -107,12 +107,12 @@ def extractor():
     global task_list,time,status,end_time
     for record in myresult:
         task_list.append(record[1])
-        time.append(record[2])
+        time.append(record[2].strftime(r"%Y-%m-%d %H:%M:%S"))
         status[record[1]] = record[3]
         if record[4] == None:
             end_time[record[1]] = "Not Started"
         else:
-            end_time[record[1]] = record[4]
+            end_time[record[1]] = record[4].strftime(r"%Y-%m-%d %H:%M:%S")
 
 
 # display tasks
