@@ -132,6 +132,29 @@ def display_task():
         print(task ,(length-len(task))*' ',': ', status[task])
 
 # main
+def main():
+    run = 1
+    while run:
+        cmd = input("what do you want to do ? (see help)")
+        if cmd == "help":
+            ...
+            #helpmanual()
+        elif cmd == "1":
+            add_task()
+        elif cmd == "2":
+            del_task()
+        elif cmd == "3":
+            display_task()
+        elif cmd == "4":
+            task_status()
+        elif cmd == "5" or cmd == "q" or cmd == "Q":
+            run = 0 
+            print("Goodbye :)")
+            save_task()
+            break
+        else:
+            print("not a valid command! :(")
+            
 end_time ={}
 time = []
 task_list = [] # list of tasks
@@ -154,4 +177,3 @@ dataloader()
 # task_status(task_list[2])
 display_task()
 print(task_list,status,time,end_time)
-save_task()
