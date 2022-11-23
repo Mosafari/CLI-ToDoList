@@ -2,6 +2,18 @@
 import mysql.connector
 import datetime
 
+
+# HELP
+def helpmanual():
+    print('''Enter "1"  to add a task.
+      "2"  to remove a task.
+      "3" to display ToDoList.
+      "4" to comlpete a task.
+      "5" or "q" to exit.
+      to see this help just type "help" :)''')
+    print() # empty line
+
+
 # create DB
 def create_db():
     global name
@@ -134,11 +146,11 @@ def display_task():
 # main
 def main():
     run = 1
+    helpmanual()
     while run:
         cmd = input("what do you want to do ? (see help)")
         if cmd == "help":
-            ...
-            #helpmanual()
+            helpmanual()
         elif cmd == "1":
             add_task()
         elif cmd == "2":
@@ -175,5 +187,6 @@ dataloader()
 # add_task()
 # print(task_list,status,time,end_time)
 # task_status(task_list[2])
+helpmanual()
 display_task()
 print(task_list,status,time,end_time)
