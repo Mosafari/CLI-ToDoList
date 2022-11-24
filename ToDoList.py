@@ -17,7 +17,7 @@ def helpmanual():
 # create DB
 def create_db():
     global name
-    name = input("Whats your name ? (optional)\n")
+    name = input("Whats your name ? (optional) \n")
     if not name:
         name = "user"
     print("hi ", name, ".")
@@ -49,9 +49,11 @@ def connector():
 # add ToDo
 def add_task():
     task = input("Enter your task : ")
+    print() # empty line
     if task.isnumeric():
         print("Task is not valid")
         add_task()
+        return
     else:
         task_list.append(task)
         time.append(datetime.datetime.now().strftime(r"%Y-%m-%d %H:%M:%S"))
@@ -62,14 +64,20 @@ def add_task():
 # complete ToDo (status)
 def task_status():
     try:
-        taskindex = int(input("Wich Task ? (Task number)"))-1
+        taskindex = int(input("Wich Task ? (Task number) "))-1
+        print() # empty line
     except ValueError:
         print("You must enter a task number! ")
         task_status()
+        return
     if taskindex < 0 or taskindex >= len(task_list):
-        print("number is out of range!")
+        print("number is out of range! ")
+        print() # empty line
         task_status()
+        return
     task = task_list[taskindex]
+    if status[task] == 'Done' :
+        return
     status[task] = "Done"
     end_time[task] = datetime.datetime.now().strftime(r"%Y-%m-%d %H:%M:%S")
     
@@ -77,13 +85,18 @@ def task_status():
 # delete ToDo
 def del_task():
     try:
-        taskindex = int(input("Wich Task ? (Task number)"))-1
+        taskindex = int(input("Wich Task ? (Task number) "))-1
+        print() # empty line
     except ValueError:
         print("You must enter a task number! ")
+        print() # empty line
         del_task()
+        return
     if taskindex < 0 or taskindex >= len(task_list):
-        print("number is out of range!")
+        print("number is out of range! ")
+        print() # empty line
         del_task()
+        return
     task = task_list[taskindex]
     time.remove(time[task_list.index(task)])
     task_list.remove(task)
@@ -95,7 +108,6 @@ def del_task():
 def save_task():
     mycursor = mydb.cursor()
     clstable = "TRUNCATE TABLE tasks"
-    print(clstable)
     mycursor.execute(clstable)
     mydb.commit()
     for i in range(len(task_list)):
@@ -123,10 +135,10 @@ def dataloader():
     mycursor.execute(sql_name)
     db_names = mycursor.fetchall()
     for dbname in db_names:
-        print(db_names)
         if "todolist" in dbname[0]:
             name = dbname[0][:-9]
             print("hi ",name)
+            print() # empty line
             usedb = "USE " + dbname[0]
             mycursor.execute(usedb)
             mydb.commit()
@@ -162,14 +174,17 @@ def display_task():
     print(" ","  ",(((length)//2)-2)*' ',"task" ,(((length)//2)-2)*' ',': ', "   status   ","     Start Time     ","      End Time")
     for task in task_list:
         print() # empty line
-        print(task_list.index(task),". ",((length-len(task))//2)*' ',task ,((length-len(task))//2)*' ',': ',' '*3 ,status[task],"  ",time[task_list.index(task)]," ",end_time[task])
+        print(task_list.index(task)+1,". ",((length-len(task))//2)*' ',task ,((length-len(task))//2)*' ',': ',' '*3 ,status[task],"  ",time[task_list.index(task)]," ",end_time[task])
+    print() # empty line
+
 
 # main
 def main():
     run = 1
     helpmanual()
     while run:
-        cmd = input("what do you want to do ? (see help)")
+        cmd = input("what do you want to do ? (see help) ")
+        print() # empty line
         if cmd == "help":
             helpmanual()
         elif cmd == "1":
@@ -187,27 +202,15 @@ def main():
             break
         else:
             print("not a valid command! :(")
+            print() # empty line
             
-end_time ={}
-time = []
-task_list = [] # list of tasks
-status ={} # status of the task key =  task and value = status  -> status =(Done, Not Started)
-connector()
 
-dataloader()
-main()
-# add_task()
-# print(task_list,status,time,end_time)
-# task_status(task_list[0])
-# print(task_list,status,time,end_time)
-# add_task()
-# print(task_list,status,time,end_time)
-# del_task(task_list[0])
-# print(task_list,status,time,end_time)
-# add_task()
-# print(task_list,status,time,end_time)
-# add_task()
-# print(task_list,status,time,end_time)
-# task_status(task_list[2])
-display_task()
-print(task_list,status,time,end_time)
+if __name__ == "__main__":
+    end_time ={}
+    time = []
+    task_list = [] # list of tasks
+    status ={} # status of the task key =  task and value = status  -> status =(Done, Not Started)
+    connector()
+    dataloader()
+    main()
+
