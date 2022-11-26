@@ -222,8 +222,14 @@ if __name__ == "__main__":
     time = []
     task_list = [] # list of tasks
     status ={} # status of the task key =  task and value = status  -> status =(Done, Not Started)
-    postgresconnector()
-    #mysqlconnector()
+    DB = input("Choose your Database : (mysql, postgresql) ").lower()
+    while DB not in ["mysql", "postgresql"]:
+        print("not a valid database")
+        DB = input("Choose your Database : (mysql, postgresql) ")
+    if DB == "mysql":
+        mysqlconnector()
+    if DB == "postgresql":
+        postgresconnector()
     dataloader()
     main()
 
