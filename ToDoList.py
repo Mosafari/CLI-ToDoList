@@ -23,22 +23,34 @@ def create_db():
         name = "user"
     print("hi ", name, ".")
     print() # empty line
-    mycursor = mydb.cursor()
-    sql = "CREATE DATABASE {}_todolist".format(name)
-    mycursor.execute(sql)
-    mydb.commit()
-    
+    sql = "CREATE DATABASE {}_todolist;".format(name)
+    if DB == 'mysql':
+        mycursor = mydb.cursor()
+        mycursor.execute(sql)
+        mydb.commit()
+    if DB == 'postgresql':
+        autocommit = psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT
+        conn.set_isolation_level( autocommit )
+        postcursor.execute(sql)
+        conn.commit()
     
 # create table
 def create_table():
-    mycursor = mydb.cursor()
-    s= "USE {}_todolist".format(name)
-    mycursor.execute(s)
-    mydb.commit()
-    sql = r"CREATE TABLE tasks (id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY, task VARCHAR(255), add_time DATETIME,status VARCHAR(255),end_time DATETIME)"
-    mycursor.execute(sql)
-    mydb.commit()
-    
+    if DB == 'mysql':
+        mycursor = mydb.cursor()
+        s= "USE {}_todolist".format(name)
+        mycursor.execute(s)
+        mydb.commit()
+        sql = r"CREATE TABLE tasks (id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY, task VARCHAR(255), add_time DATETIME,status VARCHAR(255),end_time DATETIME)"
+        mycursor.execute(sql)
+        mydb.commit()
+    if DB == 'postgresql':
+        postcursor.close()
+        conn.close()
+        postgresconnector("{}_todolist".format(name))
+        sql = r"CREATE TABLE tasks (id  SERIAL PRIMARY KEY, task VARCHAR(255), add_time TIMESTAMP,status VARCHAR(255),end_time TIMESTAMP)"
+        postcursor.execute(sql)
+        conn.commit()
     
 # connecting to mysql DB
 def mysqlconnector():
@@ -185,6 +197,8 @@ def dataloader():
                 name = dbname[0][:-9]
                 print("hi ",name)
                 print() # empty line
+                postcursor.close()
+                conn.close()
                 postgresconnector(dbname[0])
                 break
         else:
