@@ -48,9 +48,9 @@ def mysqlconnector():
 
 
 # connectind to postgresql DB
-def postgresconnector():
+def postgresconnector(databasename="postgresDB"):
     global postcursor
-    conn = psycopg2.connect(database="postgresDB",
+    conn = psycopg2.connect(database=databasename,
                         host="127.0.0.1",
                         user="postgresUser",
                         password="testtest",
@@ -140,28 +140,49 @@ def init():
 
 # data loader
 def dataloader():
-    global name
-    mycursor = mydb.cursor()
-    sql_name = "show databases"
-    # extracting databases name from database
-    mycursor.execute(sql_name)
-    db_names = mycursor.fetchall()
-    for dbname in db_names:
-        if "todolist" in dbname[0]:
-            name = dbname[0][:-9]
-            print("hi ",name)
-            print() # empty line
-            usedb = "USE " + dbname[0]
-            mycursor.execute(usedb)
-            mydb.commit()
-            break
-    else:
-        return init()
-    sql = "SELECT * FROM tasks"
-    mycursor.execute(sql)
-    global myresult
-    myresult = mycursor.fetchall()
-    extractor()
+    global name, myresult
+    if DB == 'mysql':
+        mycursor = mydb.cursor()
+        sql_name = "show databases"
+        # extracting databases name from database
+        mycursor.execute(sql_name)
+        db_names = mycursor.fetchall()
+        for dbname in db_names:
+            if "todolist" in dbname[0]:
+                name = dbname[0][:-9]
+                print("hi ",name)
+                print() # empty line
+                usedb = "USE " + dbname[0]
+                mycursor.execute(usedb)
+                mydb.commit()
+                break
+        else:
+            return init()
+        sql = "SELECT * FROM tasks"
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+        extractor()
+    if DB == "postgresql":
+        sql = "SELECT datname FROM pg_database;"
+        postcursor.execute(sql)
+        db_names = postcursor.fetchall()
+        for dbname in db_names:
+            print(dbname)
+            if "todolist" in dbname[0]:
+                name = dbname[0][:-9]
+                print("hi ",name)
+                print() # empty line
+                postgresconnector(dbname[0])
+                break
+        else:
+            return init()
+        sql = "SELECT * FROM tasks;"
+        postcursor.execute(sql)
+        myresult = postcursor.fetchall()
+        print(myresult)
+        extractor()
+        print(db_names)
+
     
 
 # data extractor
@@ -169,12 +190,18 @@ def extractor():
     global task_list,time,status,end_time
     for record in myresult:
         task_list.append(record[1])
-        time.append(record[2].strftime(r"%Y-%m-%d %H:%M:%S"))
+        if DB == 'mysql':
+            time.append(record[2].strftime(r"%Y-%m-%d %H:%M:%S"))
+        if DB == "postgresql":
+            time.append(record[2][:-8].strftime(r"%Y-%m-%d %H:%M:%S"))
         status[record[1]] = record[3]
         if record[4] == None:
             end_time[record[1]] = "Not Started"
         else:
-            end_time[record[1]] = record[4].strftime(r"%Y-%m-%d %H:%M:%S")
+            if DB == 'mysql':
+                end_time[record[1]] = record[4].strftime(r"%Y-%m-%d %H:%M:%S")
+            if DB == "postgresql":
+                end_time[record[1]] = record[4][:-8].strftime(r"%Y-%m-%d %H:%M:%S")
 
 
 # display tasks
