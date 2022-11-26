@@ -1,7 +1,7 @@
 # module required
 import mysql.connector
 import datetime
-import Psycopg2
+import psycopg2
 
 
 # HELP
@@ -40,11 +40,15 @@ def create_table():
     mydb.commit()
     
     
-# connecting to DB
-def connector():
+# connecting to mysql DB
+def mysqlconnector():
     global mydb
     mydb = mysql.connector.connect(
     host='127.0.0.1', user='root', password='testtest', database='mysql')
+
+
+# connectind to postgresql DB
+
 
 
 # add ToDo
@@ -211,7 +215,7 @@ if __name__ == "__main__":
     time = []
     task_list = [] # list of tasks
     status ={} # status of the task key =  task and value = status  -> status =(Done, Not Started)
-    connector()
+    mysqlconnector()
     dataloader()
     main()
 
