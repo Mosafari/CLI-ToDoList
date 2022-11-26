@@ -48,7 +48,14 @@ def mysqlconnector():
 
 
 # connectind to postgresql DB
-
+def postgresconnector():
+    global postcursor
+    conn = psycopg2.connect(database="postgresDB",
+                        host="127.0.0.1",
+                        user="postgresUser",
+                        password="testtest",
+                        port="5455")
+    postcursor =  conn.cursor()
 
 
 # add ToDo
@@ -215,7 +222,8 @@ if __name__ == "__main__":
     time = []
     task_list = [] # list of tasks
     status ={} # status of the task key =  task and value = status  -> status =(Done, Not Started)
-    mysqlconnector()
+    postgresconnector()
+    #mysqlconnector()
     dataloader()
     main()
 
