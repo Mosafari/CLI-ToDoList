@@ -49,7 +49,7 @@ def mysqlconnector():
 
 # connectind to postgresql DB
 def postgresconnector(databasename="postgresDB"):
-    global postcursor
+    global postcursor, conn
     conn = psycopg2.connect(database=databasename,
                         host="127.0.0.1",
                         user="postgresUser",
@@ -118,19 +118,33 @@ def del_task():
 
 #  save changes 
 def save_task():
-    mycursor = mydb.cursor()
-    clstable = "TRUNCATE TABLE tasks"
-    mycursor.execute(clstable)
-    mydb.commit()
-    for i in range(len(task_list)):
-        if status[task_list[i]] == "Done":
-            End_Time = end_time[task_list[i]]
-            save_end_time = r",STR_TO_DATE('{}','%Y-%m-%d %H:%i:%S'))".format(End_Time)
-        else:
-            save_end_time = ",NULL)"
-        sql = r"INSERT INTO tasks (task,add_time,status,end_time) values ('{}',STR_TO_DATE('{}','%Y-%m-%d %H:%i:%S'),'{}'".format(task_list[i],time[i],status[task_list[i]]) + save_end_time
-        mycursor.execute(sql)
+    if DB == 'mysql':
+        mycursor = mydb.cursor()
+        clstable = "TRUNCATE TABLE tasks"
+        mycursor.execute(clstable)
         mydb.commit()
+        for i in range(len(task_list)):
+            if status[task_list[i]] == "Done":
+                End_Time = end_time[task_list[i]]
+                save_end_time = r",STR_TO_DATE('{}','%Y-%m-%d %H:%i:%S'))".format(End_Time)
+            else:
+                save_end_time = ",NULL)"
+            sql = r"INSERT INTO tasks (task,add_time,status,end_time) values ('{}',STR_TO_DATE('{}','%Y-%m-%d %H:%i:%S'),'{}'".format(task_list[i],time[i],status[task_list[i]]) + save_end_time
+            mycursor.execute(sql)
+            mydb.commit()
+    if DB == 'postgresql':
+        clstable = 'TRUNCATE tasks RESTART IDENTITY;'
+        postcursor.execute(clstable)
+        conn.commit()
+        for i in range(len(task_list)):
+            if status[task_list[i]] == "Done":
+                End_Time = end_time[task_list[i]]
+                save_end_time = r",TO_TIMESTAMP('{}','YYYY-MM-DD HH24:MI:SS'));".format(End_Time)
+            else:
+                save_end_time = ",NULL)"
+            sql = r"INSERT INTO tasks (task,add_time,status,end_time) values ('{}',TO_TIMESTAMP('{}','YYYY-MM-DD HH24:MI:SS'),'{}'".format(task_list[i],time[i],status[task_list[i]]) + save_end_time
+            postcursor.execute(sql)
+            conn.commit()
 
 
 # init DB
@@ -167,7 +181,6 @@ def dataloader():
         postcursor.execute(sql)
         db_names = postcursor.fetchall()
         for dbname in db_names:
-            print(dbname)
             if "todolist" in dbname[0]:
                 name = dbname[0][:-9]
                 print("hi ",name)
@@ -179,9 +192,7 @@ def dataloader():
         sql = "SELECT * FROM tasks;"
         postcursor.execute(sql)
         myresult = postcursor.fetchall()
-        print(myresult)
         extractor()
-        print(db_names)
 
     
 
@@ -193,7 +204,7 @@ def extractor():
         if DB == 'mysql':
             time.append(record[2].strftime(r"%Y-%m-%d %H:%M:%S"))
         if DB == "postgresql":
-            time.append(record[2][:-8].strftime(r"%Y-%m-%d %H:%M:%S"))
+            time.append(record[2].strftime(r"%Y-%m-%d %H:%M:%S"))
         status[record[1]] = record[3]
         if record[4] == None:
             end_time[record[1]] = "Not Started"
@@ -201,7 +212,7 @@ def extractor():
             if DB == 'mysql':
                 end_time[record[1]] = record[4].strftime(r"%Y-%m-%d %H:%M:%S")
             if DB == "postgresql":
-                end_time[record[1]] = record[4][:-8].strftime(r"%Y-%m-%d %H:%M:%S")
+                end_time[record[1]] = record[4].strftime(r"%Y-%m-%d %H:%M:%S")
 
 
 # display tasks
@@ -238,6 +249,8 @@ def main():
             run = 0 
             print("Goodbye :)")
             save_task()
+            postcursor.close()
+            conn.close()
             break
         else:
             print("not a valid command! :(")
